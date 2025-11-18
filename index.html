@@ -36,6 +36,17 @@
       min-height: 100vh;
     }
 
+    .terminal-body a {
+      color: inherit;                 /* same color as parent text */
+      text-decoration: underline;   
+      text-decoration-color: currentColor;
+      text-underline-offset: 2px; 
+    }
+
+/* optional: slightly stronger underline on hover */
+  .terminal-body a:hover {
+      text-decoration-thickness: 2px;
+    }
     body {
       font-family: var(--font-main);
       background: var(--bg-dark);
@@ -731,7 +742,7 @@
                   <span class="exp-location">san francisco</span>
                 </div>
                 <div class="exp-meta">
-                  optimism (op labs); apr 2025 &ndash; present
+                  <a href ="https://optimism.io" target ="_blank">optimism (op labs)</a>; apr 2025 &ndash; present
                 </div>
                 <div class="exp-notes">
                   &gt; shipping a more modular OP Stack + all things protocol for
@@ -745,7 +756,7 @@
                 <span class="exp-location">london</span>
               </div>
                 <div class="exp-meta">
-                  rated labs (acq. by figment); apr 2023 &ndash; feb 2025
+                  <a href="https://rated.network" target="_blank">rated labs (acq. by figment)</a>; apr 2023 &ndash; feb 2025
                 </div>
                 <div class="exp-notes">
                   &gt; own the product stack at Rated from ideation to launch + growth;
@@ -759,7 +770,7 @@
                 <span class="exp-location">tokyo</span>
               </div>
                 <div class="exp-meta">
-                  coinbase; jan 2022 &ndash; feb 2023
+                  <a href="https://coinbase.com" target="_blank">coinbase</a>; jan 2022 &ndash; feb 2023
                 </div>
                 <div class="exp-notes">
                   &gt; product DRI for coinbase japan; </br>
@@ -773,7 +784,7 @@
                 <span class="exp-location">tokyo</span>
               </div>
                 <div class="exp-meta">
-                  bitcoin.com; sept 2019 &ndash; jan 2022
+                  <a href="https://bitcoin.com" target="_blank">bitcoin.com</a>; sept 2019 &ndash; jan 2022
                 </div>
                 <div class="exp-notes">
                   &gt; shipped on/offramp product + bitcoin.com multisig wallet<br />
