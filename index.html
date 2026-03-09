@@ -328,6 +328,11 @@
         color: #555 !important;
       }
       .meta span::before { color: #999 !important; }
+      .email-link { font-size: 0 !important; }
+      .email-link::after {
+        content: 'hellotosanjana@gmail.com';
+        font-size: 13px !important;
+      }
     }
   </style>
 </head>
@@ -346,7 +351,7 @@
       <span>product · crypto · ux</span>
     </div>
     <div class="header-links">
-      <a href="/cdn-cgi/l/email-protection#1179747d7d7e657e62707f7b707f7051767c70787d3f727e7c">email</a>
+      <a href="mailto:hellotosanjana@gmail.com" class="email-link">email</a>
       <a href="https://x.com/sanjsmehta" target="_blank">x</a>
       <a href="https://github.com/sanjusan" target="_blank">github</a>
       <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()">↓ pdf</button>
@@ -442,7 +447,7 @@
   <footer>
     <span>© sm · all glitches reserved 👾</span>
     <div class="footer-links">
-      <a href="/cdn-cgi/l/email-protection#335b565f5f5c475c40525d59525d5273545e525a5f1d505c5e">email</a>
+      <a href="mailto:hellotosanjana@gmail.com" class="email-link">email</a>
       <a href="https://x.com/sanjsmehta" target="_blank">x</a>
       <a href="https://github.com/sanjusan" target="_blank">github</a>
     </div>
@@ -452,7 +457,7 @@
 
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // ── THEME TOGGLE ──
   var themeToggle = document.getElementById('themeToggle');
 
