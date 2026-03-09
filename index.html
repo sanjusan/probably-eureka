@@ -114,6 +114,36 @@
       color: var(--accent-dim);
     }
 
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .header-links a {
+      color: var(--text-dim);
+      transition: color 0.2s;
+    }
+    .header-links a:hover { color: var(--accent); opacity: 1; }
+
+    .pdf-btn {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .pdf-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
     /* ── SECTION ── */
     section {
       margin-bottom: 64px;
@@ -250,24 +280,17 @@
       position: fixed;
       top: 24px;
       right: 24px;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      background: var(--surface);
-      color: var(--text-dim);
-      font-size: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s, border-color 0.3s, transform 0.2s;
       z-index: 100;
       line-height: 1;
+      padding: 4px;
+      transition: transform 0.2s;
     }
     .theme-toggle:hover {
-      border-color: var(--accent);
-      transform: scale(1.08);
+      transform: scale(1.15);
     }
 
     /* ── SMOOTH THEME TRANSITION ── */
@@ -281,6 +304,23 @@
       .entry-header { flex-direction: column; gap: 2px; }
       .meta { flex-direction: column; gap: 6px; }
       footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── PRINT / PDF ── */
+    @media print {
+      * { transition: none !important; animation: none !important; }
+      body { background: #fff !important; color: #1a1a1c !important; font-size: 12px; }
+      .container { padding: 20px 0; max-width: 100%; }
+      .theme-toggle, .pdf-btn, .cat-canvas { display: none !important; }
+      a { color: #333 !important; }
+      .section-label { color: #333 !important; border-bottom-color: #ccc !important; }
+      .entry, .quest { border-bottom-color: #e0e0e0 !important; }
+      footer { border-top-color: #e0e0e0 !important; }
+      .header-links a { color: #555 !important; }
+      .meta, .tagline, .entry-date, .entry-location, .entry-desc, .quest-desc, .quest-tag {
+        color: #555 !important;
+      }
+      .meta span::before { color: #999 !important; }
     }
   </style>
 </head>
@@ -297,6 +337,12 @@
     <div class="meta">
       <span>san francisco</span>
       <span>product · crypto · ux</span>
+    </div>
+    <div class="header-links">
+      <a href="mailto:hellotosanjana@gmail.com">email</a>
+      <a href="https://x.com/sanjsmehta" target="_blank">x</a>
+      <a href="https://github.com/sanjusan" target="_blank">github</a>
+      <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()">↓ pdf</button>
     </div>
   </header>
 
@@ -715,6 +761,27 @@
     }
     loop();
   })();
+
+  // ── PDF DOWNLOAD ──
+  function downloadPDF() {
+    // Hide non-print elements
+    var btn = document.getElementById('pdfBtn');
+    var toggle = document.getElementById('themeToggle');
+    var canvas = document.getElementById('catCanvas');
+    var headerLinks = document.querySelector('.header-links');
+    btn.style.display = 'none';
+    toggle.style.display = 'none';
+    canvas.style.display = 'none';
+    headerLinks.querySelectorAll('a').forEach(function(a) { a.style.pointerEvents = 'none'; });
+    window.print();
+    // Restore after print dialog
+    setTimeout(function() {
+      btn.style.display = '';
+      toggle.style.display = '';
+      canvas.style.display = '';
+      headerLinks.querySelectorAll('a').forEach(function(a) { a.style.pointerEvents = ''; });
+    }, 500);
+  }
 </script>
 
 </body>
