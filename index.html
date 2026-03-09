@@ -84,15 +84,13 @@
       margin-bottom: 20px;
     }
 
-    .name .dot {
+    /* ── PIXEL CAT ── */
+    .cat-canvas {
       display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: var(--accent);
-      border-radius: 50%;
-      margin-left: 4px;
-      vertical-align: super;
-      animation: pulse 2.4s ease-in-out infinite;
+      vertical-align: middle;
+      margin-left: 12px;
+      cursor: pointer;
+      image-rendering: pixelated;
     }
 
     .tagline {
@@ -247,11 +245,6 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%      { opacity: 0.3; }
-    }
-
     /* ── THEME TOGGLE ── */
     .theme-toggle {
       position: fixed;
@@ -297,7 +290,7 @@
 
   <!-- ═══ HEADER ═══ -->
   <header>
-    <h1 class="name">sanjana mehta<span class="dot"></span></h1>
+    <h1 class="name">sanjana mehta<canvas class="cat-canvas" id="catCanvas" width="120" height="32" title="click me!"></canvas></h1>
     <p class="tagline">
       building in web3 for 8+ years — extensive experience in consumer crypto apps and blockchain infrastructure.
     </p>
@@ -448,6 +441,279 @@
         applyTheme(getTimeTheme());
       }
     }, 60000);
+  })();
+
+  // ── PIXEL CAT (CANVAS) ──
+  (function() {
+    const canvas = document.getElementById('catCanvas');
+    const ctx = canvas.getContext('2d');
+    const S = 3; // pixel scale
+    let playing = false;
+
+    function getColor(type) {
+      const style = getComputedStyle(document.documentElement);
+      if (type === 'accent') return style.getPropertyValue('--accent').trim();
+      if (type === 'bg') return style.getPropertyValue('--bg').trim();
+      if (type === 'dim') return style.getPropertyValue('--text-dim').trim();
+      return '#fff';
+    }
+
+    // Draw a grid of pixels. Each row is a string, characters map to colors.
+    // '1' = accent, '2' = bg (eyes), '3' = dim (yarn), '.' = transparent
+    function drawSprite(pixels, offsetX, offsetY) {
+      for (let r = 0; r < pixels.length; r++) {
+        for (let c = 0; c < pixels[r].length; c++) {
+          const ch = pixels[r][c];
+          if (ch === '.') continue;
+          if (ch === '1') ctx.fillStyle = getColor('accent');
+          else if (ch === '2') ctx.fillStyle = getColor('bg');
+          else if (ch === '3') ctx.fillStyle = getColor('dim');
+          ctx.fillRect(offsetX + c * S, offsetY + r * S, S, S);
+        }
+      }
+    }
+
+    // ── SPRITE DEFINITIONS ──
+
+    const CAT_SIT = [
+      '.1...1.',
+      '.11.11.',
+      '.11111.',
+      '.12121.',
+      '.11111.',
+      '.1.1.1.',
+      '..111..',
+      '..1.1..',
+    ];
+
+    const CAT_SIT2 = [ // slight bounce frame
+      '.1...1.',
+      '.11.11.',
+      '.11111.',
+      '.12121.',
+      '.11111.',
+      '..111..',
+      '..1.1..',
+      '..1.1..',
+    ];
+
+    const CAT_CROUCH = [
+      '........',
+      '........',
+      '.1...1..',
+      '.11.11..',
+      '.11111..',
+      '.12121..',
+      '.111111.',
+      '11111111',
+    ];
+
+    const CAT_LEAP = [
+      '..1...1',
+      '..11.11',
+      '..11111',
+      '..12121',
+      '1.11111',
+      '11.111.',
+      '.1.....',
+      '........',
+    ];
+
+    const CAT_RUN1 = [
+      '.1...1..',
+      '.11.11..',
+      '.11111..',
+      '.12121..',
+      '.11111..',
+      '..1111..',
+      '.1...1..',
+      '1.....1.',
+    ];
+
+    const CAT_RUN2 = [
+      '.1...1..',
+      '.11.11..',
+      '.11111..',
+      '.12121..',
+      '.11111..',
+      '..1111..',
+      '..1..1..',
+      '..1..1..',
+    ];
+
+    const CAT_CATCH = [
+      '.1...1..',
+      '.11.11..',
+      '.11111..',
+      '.12121..',
+      '.1111133',
+      '..1111.3',
+      '..1..1..',
+      '..1..1..',
+    ];
+
+    const CAT_WALK_BACK1 = [
+      '..1...1',
+      '..11.11',
+      '..11111',
+      '..12121',
+      '..11111',
+      '..1111.',
+      '..1..1.',
+      '.1....1',
+    ];
+
+    const CAT_WALK_BACK2 = [
+      '..1...1',
+      '..11.11',
+      '..11111',
+      '..12121',
+      '..11111',
+      '..1111.',
+      '..1..1.',
+      '..1..1.',
+    ];
+
+    const YARN = [
+      '.33.',
+      '3333',
+      '3333',
+      '.33.',
+    ];
+
+    // ── ANIMATION STATE ──
+    let catX = 2;
+    const catY = 0;
+    let yarnX = -1; // offscreen = hidden
+    const yarnY = 5;
+    let frame = 0;
+    let state = 'idle'; // idle | crouch | leap | run | catch | return
+    let stateTimer = 0;
+    let runFrame = 0;
+
+    function clear() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function draw() {
+      clear();
+
+      // Draw yarn if visible
+      if (yarnX >= 0) {
+        drawSprite(YARN, yarnX * S, yarnY * S);
+      }
+
+      // Draw cat based on state
+      let sprite;
+      switch (state) {
+        case 'idle':
+          sprite = (Math.floor(frame / 20) % 2 === 0) ? CAT_SIT : CAT_SIT2;
+          break;
+        case 'crouch':
+          sprite = CAT_CROUCH;
+          break;
+        case 'leap':
+          sprite = CAT_LEAP;
+          break;
+        case 'run':
+          sprite = (Math.floor(runFrame / 4) % 2 === 0) ? CAT_RUN1 : CAT_RUN2;
+          runFrame++;
+          break;
+        case 'catch':
+          sprite = CAT_CATCH;
+          break;
+        case 'return':
+          sprite = (Math.floor(runFrame / 5) % 2 === 0) ? CAT_WALK_BACK1 : CAT_WALK_BACK2;
+          runFrame++;
+          break;
+        default:
+          sprite = CAT_SIT;
+      }
+      drawSprite(sprite, catX * S, catY * S);
+    }
+
+    // ── CHASE SEQUENCE ──
+    const YARN_TARGET = 28;
+
+    function startChase() {
+      if (playing) return;
+      playing = true;
+
+      // Phase 1: Yarn rolls out
+      yarnX = 10;
+      state = 'idle';
+      stateTimer = 0;
+
+      let yarnRollInterval = setInterval(function() {
+        if (yarnX < YARN_TARGET) {
+          yarnX += 1;
+        } else {
+          clearInterval(yarnRollInterval);
+        }
+      }, 30);
+
+      // Phase 2: Crouch (after 200ms)
+      setTimeout(function() {
+        state = 'crouch';
+      }, 200);
+
+      // Phase 3: Leap (after 500ms)
+      setTimeout(function() {
+        state = 'leap';
+        let leapTick = 0;
+        let leapInterval = setInterval(function() {
+          catX += 2;
+          leapTick++;
+          if (leapTick >= 3) {
+            clearInterval(leapInterval);
+            // Transition to run
+            state = 'run';
+            runFrame = 0;
+          }
+        }, 60);
+      }, 500);
+
+      // Phase 4: Run to yarn
+      setTimeout(function() {
+        state = 'run';
+        runFrame = 0;
+        let runInterval = setInterval(function() {
+          if (catX < YARN_TARGET - 2) {
+            catX += 1;
+          } else {
+            clearInterval(runInterval);
+            // Phase 5: Catch!
+            state = 'catch';
+            yarnX = -1; // hide yarn
+
+            // Phase 6: Walk back after a beat
+            setTimeout(function() {
+              state = 'return';
+              runFrame = 0;
+              let returnInterval = setInterval(function() {
+                if (catX > 2) {
+                  catX -= 1;
+                } else {
+                  clearInterval(returnInterval);
+                  state = 'idle';
+                  playing = false;
+                }
+              }, 50);
+            }, 400);
+          }
+        }, 40);
+      }, 800);
+    }
+
+    canvas.addEventListener('click', startChase);
+
+    // ── MAIN LOOP ──
+    function loop() {
+      frame++;
+      draw();
+      requestAnimationFrame(loop);
+    }
+    loop();
   })();
 </script>
 
