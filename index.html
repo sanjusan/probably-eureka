@@ -319,11 +319,11 @@
       body { background: #fff !important; color: #1a1a1c !important; font-size: 12px; }
       .container { padding: 20px 0; max-width: 100%; }
       .theme-toggle, .pdf-btn, .cat-canvas { display: none !important; }
-      a { color: #333 !important; }
+      a { color: #1a6dcc !important; text-decoration: underline !important; }
       .section-label { color: #333 !important; border-bottom-color: #ccc !important; }
       .entry, .quest { border-bottom-color: #e0e0e0 !important; }
       footer { border-top-color: #e0e0e0 !important; }
-      .header-links a { color: #555 !important; }
+      .header-links a { color: #1a6dcc !important; }
       .meta, .tagline, .entry-date, .entry-location, .entry-desc, .quest-desc, .quest-tag {
         color: #555 !important;
       }
@@ -346,7 +346,7 @@
       <span>product · crypto · ux</span>
     </div>
     <div class="header-links">
-      <a href="mailto:hellotosanjana@gmail.com">email</a>
+      <a href="/cdn-cgi/l/email-protection#1179747d7d7e657e62707f7b707f7051767c70787d3f727e7c">email</a>
       <a href="https://x.com/sanjsmehta" target="_blank">x</a>
       <a href="https://github.com/sanjusan" target="_blank">github</a>
       <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()">↓ pdf</button>
@@ -442,7 +442,7 @@
   <footer>
     <span>© sm · all glitches reserved 👾</span>
     <div class="footer-links">
-      <a href="mailto:hellotosanjana@gmail.com">email</a>
+      <a href="/cdn-cgi/l/email-protection#335b565f5f5c475c40525d59525d5273545e525a5f1d505c5e">email</a>
       <a href="https://x.com/sanjsmehta" target="_blank">x</a>
       <a href="https://github.com/sanjusan" target="_blank">github</a>
     </div>
@@ -452,7 +452,7 @@
 
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ── THEME TOGGLE ──
   var themeToggle = document.getElementById('themeToggle');
 
@@ -767,18 +767,7 @@
 
   // ── PDF DOWNLOAD ──
   function downloadPDF() {
-    var btn = document.getElementById('pdfBtn');
-    var toggle = document.getElementById('themeToggle');
-    var canvas = document.getElementById('catCanvas');
-    btn.style.display = 'none';
-    toggle.style.display = 'none';
-    canvas.style.display = 'none';
     window.print();
-    setTimeout(function() {
-      btn.style.display = '';
-      toggle.style.display = '';
-      canvas.style.display = '';
-    }, 500);
   }
 </script>
 
