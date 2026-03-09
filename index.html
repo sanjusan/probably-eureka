@@ -1,907 +1,455 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <title>👾👾 sm's world 👾👾</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sanjana mehta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <style>
+    /* ── VARIABLES ── */
     :root {
-      --bg-dark: #050608;
-      --bg-dark-alt: #0b0e14;
-      --fg-dark: #e5f3ff;
-      --accent-dark: #0040e3;
-      --accent-dark-soft: rgba(0, 59, 127, 0.12);
-
-      --bg-light: #f7fafc;
-      --bg-light-alt: #ffffff;
-      --fg-light: #101217;
-      --accent-light: #0040e3;
-      --accent-light-soft: rgba(0, 127, 95, 0.08);
-
-      --border-radius: 8px;
-      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
-      --font-mono: "DM Mono", "JetBrains Mono", "SF Mono", Menlo, Consolas,
-        monospace;
+      --serif: 'Instrument Serif', Georgia, serif;
+      --mono: 'DM Mono', 'Courier New', monospace;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    /* ── DARK THEME ── */
+    [data-theme="dark"] {
+      --bg: #0c0c0e;
+      --surface: #141416;
+      --border: #2a2a2e;
+      --text: #e8e6e1;
+      --text-dim: #b0ada5;
+      --accent: #c4f06a;
+      --accent-dim: #a0c84e;
     }
 
-    html,
+    /* ── LIGHT THEME ── */
+    [data-theme="light"] {
+      --bg: #f5f4f0;
+      --surface: #eae9e4;
+      --border: #d4d2cc;
+      --text: #1a1a1c;
+      --text-dim: #5c5b56;
+      --accent: #5da800;
+      --accent-dim: #7ac220;
+    }
+
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .terminal-body a {
-      color: inherit;                 /* same color as parent text */
-      text-decoration: underline;   
-      text-decoration-color: currentColor;
-      text-underline-offset: 2px; 
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.7; }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--bg);
     }
 
-/* optional: slightly stronger underline on hover */
-  .terminal-body a:hover {
-      text-decoration-thickness: 2px;
-    }
-    body {
-      font-family: var(--font-main);
-      background: var(--bg-dark);
-      color: var(--fg-dark);
-      display: flex;
-      justify-content: center;
-      padding: 24px;
-      transition: background 220ms ease-out, color 220ms ease-out;
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
     }
 
-    body.light {
-      background: var(--bg-light);
-      color: var(--fg-light);
+    /* ── HEADER ── */
+    header {
+      margin-bottom: 72px;
+      animation: fadeUp 0.6s ease both;
     }
 
-    .frame {
-      position: relative;
-      width: 100%;
-      max-width: 960px;
-      min-height: calc(100vh - 48px);
-      border-radius: 18px;
-      padding: 24px 24px 32px;
-      overflow-x: hidden;
-      overflow-y: visible;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      background: radial-gradient(circle at top, #151926 0, #050608 52%, #000 100%);
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.02),
-        0 32px 80px rgba(0, 0, 0, 0.85);
-    }
-
-    body.light .frame {
-      background: radial-gradient(circle at top, #ffffff 0, #e1edf5 38%, #c5d2e0 100%);
-      border-color: rgba(0, 0, 0, 0.06);
-      box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.02),
-        0 24px 60px rgba(15, 23, 42, 0.25);
-    }
-
-    /* top bar */
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+    .name {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
       margin-bottom: 20px;
-      position: relative;
-      z-index: 3;
     }
 
-    .top-bar-left {
+    .name .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-left: 4px;
+      vertical-align: super;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: var(--text-dim);
+      max-width: 440px;
+      margin-bottom: 24px;
+    }
+
+    .meta {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-mono);
+      gap: 24px;
       font-size: 12px;
+      text-transform: uppercase;
       letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.82;
+      color: var(--text-dim);
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 2px;
-      background: var(--accent-dark);
-      box-shadow:
-        0 0 12px rgba(0, 59, 127, 0.9),
-        0 0 3px rgba(0, 59, 127, 0.9);
+    .meta span::before {
+      content: '→ ';
+      color: var(--accent-dim);
     }
 
-    body.light .status-dot {
-      background: var(--accent-light);
-      box-shadow:
-      0 0 14px rgba(0, 59, 127, 0.55),
-      0 0 3px rgba(0, 59, 127, 0.7);
+    /* ── SECTION ── */
+    section {
+      margin-bottom: 64px;
+      animation: fadeUp 0.6s ease both;
     }
 
-    .mode-toggle {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      width: flex;
-      padding: 4px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(5, 6, 8, 0.9);
-      cursor: pointer;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: rgba(255, 255, 255, 0.65);
-      overflow: hidden;
-    }
+    section:nth-child(2) { animation-delay: 0.1s; }
+    section:nth-child(3) { animation-delay: 0.2s; }
+    section:nth-child(4) { animation-delay: 0.3s; }
 
-    body.light .mode-toggle {
-      background: rgba(245, 249, 252, 0.96);
-      border-color: rgba(15, 23, 42, 0.16);
-      color: rgba(15, 23, 42, 0.8);
-    }
-
-    .mode-toggle span {
-      position: relative;
-      z-index: 2;
-      flex: 1;
-      text-align: center;
-      padding: 2px 3px;
-      user-select: none;
-    }
-
-    .mode-toggle-thumb {
-      position: absolute;
-      top: 3px;
-      bottom: 3px;
-      width: 45px;
-      border-radius: 999px;
-      background: var(--accent-dark);
-      box-shadow:
-        0 0 14px rgba(0, 59, 127, 0.55),
-        inset 0 0 0 1px rgba(0, 0, 0, 0.4);
-      transform: translateX(1px);
-      transition: transform 200ms ease-out, background 200ms ease-out,
-        box-shadow 200ms ease-out;
-    }
-
-    body.light .mode-toggle-thumb {
-      background: var(--accent-light);
-      box-shadow:
-        0 0 14px rgba(0, 59, 127, 0.55),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.7);
-      transform: translateX(90px);
-    }
-
-    /* pixel sky + clouds */
-
-    .sky {
-      position: absolute;
-      inset: 0 0 45% 0;
-      overflow: hidden;
-      z-index: 0;
-      image-rendering: pixelated;
-      pointer-events: none;
-    }
-
-    .scanline {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.22) 1px,
-        transparent 1px
-      );
-      background-size: 100% 3px;
-      mix-blend-mode: soft-light;
-      opacity: 0.6;
-    }
-
-    body.light .scanline {
-      opacity: 0.3;
-      mix-blend-mode: multiply;
-    }
-
-    .cloud {
-      position: absolute;
-      width: 96px;
-      height: 48px;
-      image-rendering: pixelated;
-      background: transparent;
-      opacity: 0.92;
-      animation: cloud-drift 40s linear infinite;
-      --c: rgba(226, 249, 255, 0.95);
-      box-shadow:
-        16px 0 var(--c),
-        24px 0 var(--c),
-        32px 0 var(--c),
-        40px 0 var(--c),
-        48px 0 var(--c),
-        56px 0 var(--c),
-        8px 8px var(--c),
-        16px 8px var(--c),
-        24px 8px var(--c),
-        32px 8px var(--c),
-        40px 8px var(--c),
-        48px 8px var(--c),
-        56px 8px var(--c),
-        64px 8px var(--c),
-        16px 16px var(--c),
-        24px 16px var(--c),
-        32px 16px var(--c),
-        40px 16px var(--c),
-        48px 16px var(--c),
-        56px 16px var(--c),
-        24px 24px var(--c),
-        32px 24px var(--c),
-        40px 24px var(--c),
-        48px 24px var(--c);
-    }
-
-    body.light .cloud {
-      --c: rgba(255, 255, 255, 1);
-      opacity: 0.9;
-    }
-
-    .cloud.cloud-1 {
-      top: 12%;
-      left: -80px;
-      transform: scale(1.2);
-      animation-duration: 45s;
-    }
-
-    .cloud.cloud-2 {
-      top: 30%;
-      left: -160px;
-      transform: scale(1);
-      animation-duration: 36s;
-      animation-delay: -8s;
-    }
-
-    .cloud.cloud-3 {
-      top: 22%;
-      left: -220px;
-      transform: scale(1.5);
-      animation-duration: 52s;
-      animation-delay: -18s;
-    }
-
-    .cloud.cloud-4 {
-      top: 40%;
-      left: -190px;
-      transform: scale(0.9);
-      animation-duration: 30s;
-      animation-delay: -12s;
-    }
-
-    @keyframes cloud-drift {
-      0% {
-        transform: translateX(0) scale(var(--cloud-scale, 1));
-      }
-      100% {
-        transform: translateX(1400px) scale(var(--cloud-scale, 1));
-      }
-    }
-
-    /* layout */
-
-    .content {
-      position: relative;
-      z-index: 2;
-      margin-top: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .lower-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.85fr) minmax(0, 1.15fr);
-      gap: 26px;
-    }
-
-    @media (max-width: 800px) {
-      .frame {
-        padding: 18px 16px 24px;
-      }
-      .lower-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .hero-card,
-    .terminal-card {
-      position: relative;
-      padding: 16px 18px 18px;
-      border-radius: var(--border-radius);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(0, 59, 127, 0.18);
-      background: linear-gradient(
-        135deg,
-        rgba(1, 6, 8, 0.95),
-        rgba(5, 18, 24, 0.98)
-      );
-      box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.7),
-        0 18px 40px rgba(0, 0, 0, 0.9);
-    }
-
-    body.light .hero-card,
-    body.light .terminal-card {
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.98),
-        rgba(242, 247, 252, 0.98)
-      );
-      border-color: rgba(15, 23, 42, 0.12);
-      box-shadow:
-        0 0 0 1px rgba(148, 163, 184, 0.1),
-        0 16px 38px rgba(15, 23, 42, 0.25);
-    }
-
-    /* window headers */
-
-    .window-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
+    .section-label {
       font-size: 11px;
-      font-family: var(--font-mono);
-      opacity: 0.85;
-    }
-
-    .window-dots {
-      display: flex;
-      gap: 5px;
-    }
-
-    .window-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 2px;
-      background: #ff5f57;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
-    }
-
-    .window-dot:nth-child(2) {
-      background: #febc2e;
-    }
-
-    .window-dot:nth-child(3) {
-      background: #28c840;
-    }
-
-    .window-title {
-      text-transform: lowercase;
-      letter-spacing: 0.12em;
-    }
-
-    /* hero / identity */
-
-    .hero-main {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .hero-name {
-      font-family: var(--font-mono);
-      font-size: 24px;
-      letter-spacing: 0.1em;
       text-transform: uppercase;
-      text-shadow:
-        0 0 20px rgba(0, 59, 127, 0.4),
-        0 0 4px rgba(0, 59, 127, 0.6);
-    }
-
-    body.light .hero-name {
-      text-shadow:
-        0 0 18px rgba(0, 59, 127, 0.3),
-        0 0 2px rgba(0, 0, 0, 0.15);
-    }
-
-    .hero-title {
-      font-family: var(--font-mono);
-      font-size: 13px;
       letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(229, 243, 255, 0.9);
+      color: var(--accent);
+      margin-bottom: 28px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
     }
 
-    body.light .hero-title {
-      color: rgba(15, 23, 42, 0.72);
+    /* ── CAREER ENTRIES ── */
+    .entry {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
     }
 
-    .hero-tagline {
-      margin-top: 6px;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      line-height: 1.5;
-      color: rgba(214, 230, 244, 0.82);
-    }
+    .entry:last-child { border-bottom: none; }
 
-    body.light .hero-tagline {
-      color: rgba(15, 23, 42, 0.75);
-    }
-
-    .hero-meta {
-      margin-top: 10px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 14px;
-      opacity: 0.86;
-    }
-
-    .meta-pill {
-      padding: 3px 7px;
-      border-radius: 999px;
-      background: var(--accent-dark-soft);
-      border: 1px solid rgba(0, 59, 127, 0.3);
-    }
-
-    body.light .meta-pill {
-      background: var(--accent-light-soft);
-      border-color: rgba(0, 59, 127, 0.2);
-    }
-
-    /* side quests log */
-
-    .side-quests {
-      margin-top: 18px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.6;
-      color: rgba(199, 223, 239, 0.8);
-    }
-
-    body.light .side-quests {
-      color: rgba(15, 23, 42, 0.8);
-    }
-
-    .sq-header-row {
+    .entry-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-bottom: 6px;
     }
 
-    .sq-label-main {
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+    .entry-role {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .entry-date {
       font-size: 12px;
-      opacity: 0.8;
+      color: var(--text-dim);
+      white-space: nowrap;
     }
 
-    .sq-label-meta {
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-size: 10px;
-      opacity: 0.55;
+    .entry-company {
+      font-size: 13px;
+      margin-bottom: 6px;
     }
 
-    .sq-groups {
-      border-left: 1px dashed rgba(0, 59, 127, 0.35);
-      padding-left: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .entry-company a { color: var(--accent); }
+
+    .entry-location {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
     }
 
-    body.light .sq-groups {
-      border-left-color: rgba(0, 59, 127, 0.3);
+    .entry-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.65;
     }
 
-    .sq-group-label {
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-size: 10px;
-      opacity: 0.75;
+    /* ── SIDE QUESTS ── */
+    .quest {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .quest:last-child { border-bottom: none; }
+
+    .quest-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
       margin-bottom: 4px;
     }
 
-    .sq-row {
-      display: grid;
-      grid-template-columns: 10px minmax(0, 1fr);
-      column-gap: 8px;
-      padding: 3px 0 10px 0;
-    }
-
-    .sq-row-bullet {
-      color: var(--accent-dark);
-    }
-
-    body.light .sq-row-bullet {
-      color: var(--accent-light);
-    }
-
-    .sq-row-body {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .sq-title {
-      font-size: 12px;
-      text-transform: lowercase;
-      color: var(--accent-dark);
-    }
-
-    .sq-desc {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.4;
-      color: rgba(214, 230, 244, 0.8);
-      padding: 0 0 20px 0;
-    }
-
-    body.light .sq-desc {
-      color: rgba(15, 23, 42, 0.8);
-    }
-
-    .sq-tags {
+    .quest-tag {
+      display: inline-block;
       font-size: 10px;
-      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-dim);
+      margin-left: 8px;
+      vertical-align: middle;
     }
 
-    /* work experience terminal */
-
-    .terminal-body {
-      font-family: var(--font-mono);
-      font-size: 12px;
+    .quest-desc {
+      font-size: 13px;
+      color: var(--text-dim);
       line-height: 1.6;
-      color: rgba(199, 223, 239, 0.9);
     }
 
-    body.light .terminal-body {
-      color: rgba(15, 23, 42, 0.8);
-    }
-
-    .prompt-line {
-      color: var(--accent-dark);
-      display: flex;
-      gap: 6px;
-      align-items: baseline;
-      margin-bottom: 4px;
-    }
-
-    body.light .prompt-line {
-      color: var(--accent-light);
-    }
-
-    .prompt-path {
-      color: rgba(229, 243, 255, 0.9);
-    }
-
-    body.light .prompt-path {
-      color: rgba(15, 23, 42, 0.8);
-    }
-
-    .experience-list {
-      margin-top: 6px;
-      border-left: 1px dashed rgba(0, 59, 127, 0.35);
-      padding-left: 10px;
-      display: grid;
-      gap: 10px;
-    }
-
-    body.light .experience-list {
-      border-left-color: rgba(0, 59, 127, 0.3);
-    }
-
-    .exp-item {
-      padding: 4px 0;
-    }
-
-    .exp-role {
-      color: var(--accent-dark);
-    }
-
-    .exp-role-row {
-      display: flex;
-     justify-content: space-between;
-      align-items: baseline;
-      width: 100%;
-    }
-
-.exp-location {
-  font-size: 11px;
-  opacity: 0.65;
-  font-family: var(--font-mono);
-  text-transform: lowercase;
-}
-
-    body.light .exp-role {
-      color: var(--accent-light);
-    }
-
-    .exp-meta {
-      opacity: 0.9;
-    }
-
-    .exp-notes {
-      opacity: 0.9;
-    }
-
-    .exp-notes span {
-      opacity: 0.8;
-    }
-
-    /* footer */
-
-    .footer {
-      margin-top: 18px;
-      font-family: var(--font-mono);
-      font-size: 11px;
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-dim);
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
-      opacity: 0.7;
+      animation: fadeUp 0.6s ease 0.4s both;
     }
 
-    @media (max-width: 640px) {
-      .footer {
-        flex-direction: column;
-      }
+    .footer-links {
+      display: flex;
+      gap: 20px;
     }
 
-    .footer a {
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px dotted currentColor;
+    .footer-links a {
+      color: var(--text-dim);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent); opacity: 1; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .footer a:hover {
-      border-bottom-style: solid;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.3; }
+    }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--text-dim);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+      z-index: 100;
+      line-height: 1;
+    }
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      transform: scale(1.08);
+    }
+
+    /* ── SMOOTH THEME TRANSITION ── */
+    body, body * {
+      transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 520px) {
+      .container { padding: 48px 20px 40px; }
+      .entry-header { flex-direction: column; gap: 2px; }
+      .meta { flex-direction: column; gap: 6px; }
+      footer { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="frame">
-    <div class="sky">
-      <div class="cloud cloud-1"></div>
-      <div class="cloud cloud-2"></div>
-      <div class="cloud cloud-3"></div>
-      <div class="cloud cloud-4"></div>
-      <div class="scanline"></div>
+
+<div class="container">
+
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <h1 class="name">sanjana mehta<span class="dot"></span></h1>
+    <p class="tagline">
+      building in web3 for 8+ years — extensive experience in consumer crypto apps and blockchain infrastructure.
+    </p>
+    <div class="meta">
+      <span>san francisco</span>
+      <span>product · crypto · ux</span>
+    </div>
+  </header>
+
+  <!-- ═══ CAREER ═══ -->
+  <section>
+    <div class="section-label">career</div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-role">senior protocol product manager</span>
+        <span class="entry-date">apr 2025 – present</span>
+      </div>
+      <div class="entry-company"><a href="https://optimism.io" target="_blank">optimism (op labs)</a></div>
+      <div class="entry-location">san francisco</div>
+      <p class="entry-desc">shipping a more modular OP Stack + all things protocol for an interoperable, open and equal future</p>
     </div>
 
-    <div class="top-bar">
-      <div class="top-bar-left">
-        <div class="status-dot"></div>
-        <div>gm</div>
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-role">product lead</span>
+        <span class="entry-date">apr 2023 – feb 2025</span>
       </div>
-      <button class="mode-toggle" id="modeToggle" aria-label="toggle theme">
-        <div class="mode-toggle-thumb"></div>
-        <span>dark</span>
-      </button>
+      <div class="entry-company"><a href="https://rated.network" target="_blank">rated labs</a> <span style="color:var(--text-dim); font-size:12px;">(acq. by figment)</span></div>
+      <div class="entry-location">london</div>
+      <p class="entry-desc">owned the product stack from ideation to launch + growth — built explorer and data infra tools for validators and institutions</p>
     </div>
 
-    <div class="content">
-      <!-- identity: full width -->
-      <section class="hero-card">
-        <div class="window-header">
-          <div class="window-dots">
-            <div class="window-dot"></div>
-            <div class="window-dot"></div>
-            <div class="window-dot"></div>
-          </div>
-          <div class="window-title">~/identity</div>
-        </div>
-
-        <div class="hero-main">
-          <div class="hero-name">sanjana mehta</div>
-          <p class="hero-tagline">
-            it's probably best to just ask me how to pronounce my name. been building in web3 for the past 8 years and have extensive xp in consumer centric crypto apps and blockchain infra.
-          </p>
-
-          <div class="hero-meta">
-            <div class="meta-pill">location: san francisco</div>
-            <div class="meta-pill">stack: product · crypto · ux</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- side quests + work experience -->
-      <div class="lower-grid">
-
-        <!-- work experience terminal -->
-        <section class="terminal-card">
-          <div class="window-header">
-            <div class="window-dots">
-              <div class="window-dot"></div>
-              <div class="window-dot"></div>
-              <div class="window-dot"></div>
-            </div>
-            <div class="window-title">~/career.log</div>
-          </div>
-
-          <div class="terminal-body">
-            <div class="prompt-line">
-              <span>guest@sm</span>
-              <span class="prompt-path">~/career.log</span>
-            </div>
-
-            <div class="experience-list">
-              <div class="exp-item">
-                <div class="exp-role-row">
-                  <span class="exp-role">senior protocol product manager</span>
-                  <span class="exp-location">san francisco</span>
-                </div>
-                <div class="exp-meta">
-                  <a href ="https://optimism.io" target ="_blank">optimism (op labs)</a>; apr 2025 &ndash; present
-                </div>
-                <div class="exp-notes">
-                  &gt; shipping a more modular OP Stack + all things protocol for
-                  a interoperable, open and equal future<br />
-                </div>
-              </div>
-
-              <div class="exp-item">
-                <div class="exp-role-row">
-                <div class="exp-role">product lead</div>
-                <span class="exp-location">london</span>
-              </div>
-                <div class="exp-meta">
-                  <a href="https://rated.network" target="_blank">rated labs (acq. by figment)</a>; apr 2023 &ndash; feb 2025
-                </div>
-                <div class="exp-notes">
-                  &gt; own the product stack at Rated from ideation to launch + growth;
-                  built explorer and data infra tools for validators and institutions<br />
-                </div>
-              </div>
-
-              <div class="exp-item">
-                <div class="exp-role-row">
-                <div class="exp-role">product manager II</div>
-                <span class="exp-location">tokyo</span>
-              </div>
-                <div class="exp-meta">
-                  <a href="https://coinbase.com" target="_blank">coinbase</a>; jan 2022 &ndash; feb 2023
-                </div>
-                <div class="exp-notes">
-                  &gt; product DRI for coinbase japan; </br>
-                  crafted onboarding flows, delivered a lozalized consumer trading + coinbase wallet app and ran growth experiments<br />
-                </div>
-              </div>
-
-              <div class="exp-item">
-                <div class="exp-role-row">
-                <div class="exp-role">product manager</div>
-                <span class="exp-location">tokyo</span>
-              </div>
-                <div class="exp-meta">
-                  <a href="https://bitcoin.com" target="_blank">bitcoin.com</a>; sept 2019 &ndash; jan 2022
-                </div>
-                <div class="exp-notes">
-                  &gt; shipped on/offramp product + bitcoin.com multisig wallet<br />
-                </div>
-              </div>
-
-              <div class="exp-item">
-                <div class="exp-role-row">
-                <div class="exp-role">product manager</div>
-                <span class="exp-location">tokyo</span>
-              </div>
-                <div class="exp-meta">
-                  orb inc (acq. by trustbank); nov 2017 &ndash; sept 2019
-                </div>
-                <div class="exp-notes">
-                  &gt; launched an API suite for orb’s DLT middleware, enabling local governments
-                  and communities to create their own digital currencies<br />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-          <!-- side quests log -->
-        <section class="terminal-card">
-          <div class="window-header">
-            <div class="window-dots">
-              <div class="window-dot"></div>
-              <div class="window-dot"></div>
-              <div class="window-dot"></div>
-            </div>
-            <div class="window-title">~/side_quests.log</div>
-          </div>
-
-          <div class="terminal-body">
-            <div class="prompt-line">
-              <span>guest@sm</span>
-              <span class="prompt-path">~/side_quests.log</span>
-            </div>
-
-            <div class="sq-groups">
-              <div>
-                  <div class="sq-row-body">
-                    <span class="sq-title">ceramics</span>
-                    <span class="sq-desc">
-                      &gt;  throwing vessels on a wheel, testing glazes, and attempting to recreate a coffee cup i drank from in Okinawa
-                    </span>
-                </div>
-              </div>
-
-              <div>
-                <div class="sq-group-label">past</div>
-                  <div class="sq-row-body">
-                    <span class="sq-title">venture expert @ japan venture academy</span>
-                    <span class="sq-desc">
-                      &gt; product expert at a 3-month startup fellowship for university students
-                    </span>
-                </div>
-
-
-                  <div class="sq-row-body">
-                    <span class="sq-title">web3 instructor @ paragon one</span>
-                    <span class="sq-desc">
-                      &gt; co-designed and taught a remote externship to
-                      students on the web3 bank of the future
-                    </span>
-                </div>
-
-                
-                  <div class="sq-row-body">
-                    <span class="sq-title">mentor @ japan product camp</span>
-                    <span class="sq-desc">
-                      &gt; mentored aspiring pms in a 6-week program focused on product
-                      practice in japan
-                    </span>
-                </div>
-
-                
-                  <div class="sq-row-body">
-                    <span class="sq-title">consultant @ samba tv</span>
-                    <span class="sq-desc">
-                      &gt; built a PoC web3 wallet to give tv viewers more control
-                      over how their data is collected and monetized
-                    </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-role">product manager II</span>
+        <span class="entry-date">jan 2022 – feb 2023</span>
       </div>
+      <div class="entry-company"><a href="https://coinbase.com" target="_blank">coinbase</a></div>
+      <div class="entry-location">tokyo</div>
+      <p class="entry-desc">product DRI for coinbase japan — crafted onboarding flows, delivered a localized consumer trading + wallet app, ran growth experiments</p>
     </div>
 
-    <footer class="footer">
-      <div>&copy; <span id="year"></span> sm ·  👾 all glitches reserved 👾 </div>
-      <div>
-        contact: <a href="mailto:hellotosanjana@gmail.com">hellotosanjana@gmail.com</a> ·
-        <a href="https://x.com/sanjsmehta" target="_blank" rel="noreferrer">x</a> /
-        <a href="https://github.com/sanjusan" target="_blank" rel="noreferrer">github</a>
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-role">product manager</span>
+        <span class="entry-date">sept 2019 – jan 2022</span>
       </div>
-    </footer>
-  </div>
+      <div class="entry-company"><a href="https://bitcoin.com" target="_blank">bitcoin.com</a></div>
+      <div class="entry-location">tokyo</div>
+      <p class="entry-desc">shipped on/offramp product + bitcoin.com multisig wallet</p>
+    </div>
 
-  <script>
-    const body = document.body;
-    const toggle = document.getElementById("modeToggle");
-    const stored = window.localStorage.getItem("theme");
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-role">product manager</span>
+        <span class="entry-date">nov 2017 – sept 2019</span>
+      </div>
+      <div class="entry-company">orb inc <span style="color:var(--text-dim); font-size:12px;">(acq. by trustbank)</span></div>
+      <div class="entry-location">tokyo</div>
+      <p class="entry-desc">launched an API suite for orb's DLT middleware, enabling local governments and communities to create their own digital currencies</p>
+    </div>
+  </section>
 
-    if (stored === "light") {
-      body.classList.add("light");
+  <!-- ═══ SIDE QUESTS ═══ -->
+  <section>
+    <div class="section-label">side quests</div>
+
+    <div class="quest">
+      <div class="quest-title">ceramics <span class="quest-tag">current</span></div>
+      <p class="quest-desc">throwing vessels on a wheel, testing glazes, and attempting to recreate a coffee cup i drank from in okinawa</p>
+    </div>
+
+    <div class="quest">
+      <div class="quest-title">venture expert — japan venture academy <span class="quest-tag">past</span></div>
+      <p class="quest-desc">product expert at a 3-month startup fellowship for university students</p>
+    </div>
+
+    <div class="quest">
+      <div class="quest-title">web3 instructor — paragon one <span class="quest-tag">past</span></div>
+      <p class="quest-desc">co-designed and taught a remote externship on the web3 bank of the future</p>
+    </div>
+
+    <div class="quest">
+      <div class="quest-title">mentor — japan product camp <span class="quest-tag">past</span></div>
+      <p class="quest-desc">mentored aspiring pms in a 6-week program focused on product practice in japan</p>
+    </div>
+
+    <div class="quest">
+      <div class="quest-title">consultant — samba tv <span class="quest-tag">past</span></div>
+      <p class="quest-desc">built a PoC web3 wallet to give tv viewers more control over how their data is collected and monetized</p>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <span>© sm · all glitches reserved 👾</span>
+    <div class="footer-links">
+      <a href="mailto:hellotosanjana@gmail.com">email</a>
+      <a href="https://x.com/sanjsmehta" target="_blank">x</a>
+      <a href="https://github.com/sanjusan" target="_blank">github</a>
+    </div>
+  </footer>
+
+</div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+
+<script>
+  (function() {
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    function getTimeTheme() {
+      const hour = new Date().getHours();
+      return (hour >= 8 && hour < 17) ? 'light' : 'dark';
     }
 
-    toggle.addEventListener("click", () => {
-      body.classList.toggle("light");
-      const mode = body.classList.contains("light") ? "light" : "dark";
-      window.localStorage.setItem("theme", mode);
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      toggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
+
+    // Check for manual override in localStorage
+    const saved = localStorage.getItem('theme-override');
+    if (saved) {
+      applyTheme(saved);
+    } else {
+      applyTheme(getTimeTheme());
+    }
+
+    toggle.addEventListener('click', function() {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+
+      // If manual choice matches time-based, clear override; otherwise save it
+      if (next === getTimeTheme()) {
+        localStorage.removeItem('theme-override');
+      } else {
+        localStorage.setItem('theme-override', next);
+      }
     });
 
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+    // Re-check time every minute — only apply if no manual override
+    setInterval(function() {
+      if (!localStorage.getItem('theme-override')) {
+        applyTheme(getTimeTheme());
+      }
+    }, 60000);
+  })();
+</script>
+
 </body>
 </html>
