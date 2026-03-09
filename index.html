@@ -201,6 +201,13 @@
 
     .entry-company a { color: var(--accent); }
 
+    /* ── BRAND COLORS (hover only) ── */
+    .brand-optimism a:hover      { color: #ff0420 !important; opacity: 1; }
+    .brand-rated a:hover         { color: #1276e2 !important; opacity: 1; }
+    .brand-coinbase a:hover      { color: #0052ff !important; opacity: 1; }
+    .brand-bitcoin a:hover       { color: #f7931a !important; opacity: 1; }
+    .brand-orb:hover             { color: #4ecdc4; }
+
     .entry-location {
       font-size: 12px;
       color: var(--text-dim);
@@ -355,7 +362,7 @@
         <span class="entry-role">senior protocol product manager</span>
         <span class="entry-date">apr 2025 – present</span>
       </div>
-      <div class="entry-company"><a href="https://optimism.io" target="_blank">optimism (op labs)</a></div>
+      <div class="entry-company brand-optimism"><a href="https://optimism.io" target="_blank">optimism (op labs)</a></div>
       <div class="entry-location">san francisco</div>
       <p class="entry-desc">shipping a more modular OP Stack + all things protocol for an interoperable, open and equal future</p>
     </div>
@@ -365,7 +372,7 @@
         <span class="entry-role">product lead</span>
         <span class="entry-date">apr 2023 – feb 2025</span>
       </div>
-      <div class="entry-company"><a href="https://rated.network" target="_blank">rated labs</a> <span style="color:var(--text-dim); font-size:12px;">(acq. by figment)</span></div>
+      <div class="entry-company brand-rated"><a href="https://rated.network" target="_blank">rated labs</a> <span style="color:var(--text-dim); font-size:12px;">(acq. by figment)</span></div>
       <div class="entry-location">london</div>
       <p class="entry-desc">owned the product stack from ideation to launch + growth — built explorer and data infra tools for validators and institutions</p>
     </div>
@@ -375,7 +382,7 @@
         <span class="entry-role">product manager II</span>
         <span class="entry-date">jan 2022 – feb 2023</span>
       </div>
-      <div class="entry-company"><a href="https://coinbase.com" target="_blank">coinbase</a></div>
+      <div class="entry-company brand-coinbase"><a href="https://coinbase.com" target="_blank">coinbase</a></div>
       <div class="entry-location">tokyo</div>
       <p class="entry-desc">product DRI for coinbase japan — crafted onboarding flows, delivered a localized consumer trading + wallet app, ran growth experiments</p>
     </div>
@@ -385,7 +392,7 @@
         <span class="entry-role">product manager</span>
         <span class="entry-date">sept 2019 – jan 2022</span>
       </div>
-      <div class="entry-company"><a href="https://bitcoin.com" target="_blank">bitcoin.com</a></div>
+      <div class="entry-company brand-bitcoin"><a href="https://bitcoin.com" target="_blank">bitcoin.com</a></div>
       <div class="entry-location">tokyo</div>
       <p class="entry-desc">shipped on/offramp product + bitcoin.com multisig wallet</p>
     </div>
@@ -395,7 +402,7 @@
         <span class="entry-role">product manager</span>
         <span class="entry-date">nov 2017 – sept 2019</span>
       </div>
-      <div class="entry-company">orb inc <span style="color:var(--text-dim); font-size:12px;">(acq. by trustbank)</span></div>
+      <div class="entry-company brand-orb">orb inc <span style="color:var(--text-dim); font-size:12px;">(acq. by trustbank)</span></div>
       <div class="entry-location">tokyo</div>
       <p class="entry-desc">launched an API suite for orb's DLT middleware, enabling local governments and communities to create their own digital currencies</p>
     </div>
@@ -443,49 +450,45 @@
 
 </div>
 
-<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
 <script>
-  (function() {
-    const toggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
+  // ── THEME TOGGLE ──
+  var themeToggle = document.getElementById('themeToggle');
 
-    function getTimeTheme() {
-      const hour = new Date().getHours();
-      return (hour >= 8 && hour < 17) ? 'light' : 'dark';
-    }
+  function getTimeTheme() {
+    var hour = new Date().getHours();
+    return (hour >= 8 && hour < 17) ? 'light' : 'dark';
+  }
 
-    function applyTheme(theme) {
-      html.setAttribute('data-theme', theme);
-      toggle.textContent = theme === 'dark' ? '🌙' : '☀️';
-    }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+  }
 
-    // Check for manual override in localStorage
-    const saved = localStorage.getItem('theme-override');
-    if (saved) {
-      applyTheme(saved);
-    } else {
-      applyTheme(getTimeTheme());
-    }
-
-    toggle.addEventListener('click', function() {
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      applyTheme(next);
-
-      // If manual choice matches time-based, clear override; otherwise save it
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try {
       if (next === getTimeTheme()) {
         localStorage.removeItem('theme-override');
       } else {
         localStorage.setItem('theme-override', next);
       }
-    });
+    } catch(e) {}
+  }
 
-    // Re-check time every minute — only apply if no manual override
+  // Init theme
+  (function() {
+    var saved = null;
+    try { saved = localStorage.getItem('theme-override'); } catch(e) {}
+    applyTheme(saved || getTimeTheme());
+
     setInterval(function() {
-      if (!localStorage.getItem('theme-override')) {
-        applyTheme(getTimeTheme());
-      }
+      var override = null;
+      try { override = localStorage.getItem('theme-override'); } catch(e) {}
+      if (!override) applyTheme(getTimeTheme());
     }, 60000);
   })();
 
@@ -764,22 +767,17 @@
 
   // ── PDF DOWNLOAD ──
   function downloadPDF() {
-    // Hide non-print elements
     var btn = document.getElementById('pdfBtn');
     var toggle = document.getElementById('themeToggle');
     var canvas = document.getElementById('catCanvas');
-    var headerLinks = document.querySelector('.header-links');
     btn.style.display = 'none';
     toggle.style.display = 'none';
     canvas.style.display = 'none';
-    headerLinks.querySelectorAll('a').forEach(function(a) { a.style.pointerEvents = 'none'; });
     window.print();
-    // Restore after print dialog
     setTimeout(function() {
       btn.style.display = '';
       toggle.style.display = '';
       canvas.style.display = '';
-      headerLinks.querySelectorAll('a').forEach(function(a) { a.style.pointerEvents = ''; });
     }, 500);
   }
 </script>
