@@ -85,12 +85,60 @@
     }
 
     /* ── PIXEL CAT ── */
-    .cat-canvas {
+    .cat-wrapper {
       display: inline-block;
+      position: relative;
       vertical-align: middle;
       margin-left: 12px;
+    }
+
+    .cat-canvas {
+      display: block;
       cursor: pointer;
       image-rendering: pixelated;
+    }
+
+    .speech-bubble {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 1;
+      animation: bubbleFadeIn 0.4s ease both;
+      margin-bottom: 4px;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: var(--text);
+    }
+
+    .speech-bubble.hidden {
+      animation: bubbleFadeOut 0.3s ease forwards;
+    }
+
+    @keyframes bubbleFadeIn {
+      0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes bubbleFadeOut {
+      0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
     }
 
     .tagline {
@@ -318,7 +366,7 @@
       * { transition: none !important; animation: none !important; }
       body { background: #fff !important; color: #1a1a1c !important; font-size: 12px; }
       .container { padding: 20px 0; max-width: 100%; }
-      .theme-toggle, .pdf-btn, .cat-canvas { display: none !important; }
+      .theme-toggle, .pdf-btn, .cat-canvas, .speech-bubble { display: none !important; }
       a { color: #1a6dcc !important; text-decoration: underline !important; }
       .section-label { color: #333 !important; border-bottom-color: #ccc !important; }
       .entry, .quest { border-bottom-color: #e0e0e0 !important; }
@@ -342,7 +390,7 @@
 
   <!-- ═══ HEADER ═══ -->
   <header>
-    <h1 class="name">sanjana mehta<canvas class="cat-canvas" id="catCanvas" width="120" height="32" title="click me!"></canvas></h1>
+    <h1 class="name">sanjana mehta<span class="cat-wrapper"><canvas class="cat-canvas" id="catCanvas" width="120" height="32" title="click me!"></canvas><span class="speech-bubble" id="speechBubble">yarn me!</span></span></h1>
     <p class="tagline">
       building in web3 for 8+ years — extensive experience in consumer crypto apps and blockchain infrastructure.
     </p>
@@ -351,7 +399,7 @@
       <span>product · crypto · ux</span>
     </div>
     <div class="header-links">
-      <a href="mailto:hellotosanjana@gmail.com" class="email-link">email</a>
+      <a href="#" class="email-link" id="headerEmail">email</a>
       <a href="https://x.com/sanjsmehta" target="_blank">x</a>
       <a href="https://github.com/sanjusan" target="_blank">github</a>
       <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()">↓ pdf</button>
@@ -447,7 +495,7 @@
   <footer>
     <span>© sm · all glitches reserved 👾</span>
     <div class="footer-links">
-      <a href="mailto:hellotosanjana@gmail.com" class="email-link">email</a>
+      <a href="#" class="email-link" id="footerEmail">email</a>
       <a href="https://x.com/sanjsmehta" target="_blank">x</a>
       <a href="https://github.com/sanjusan" target="_blank">github</a>
     </div>
@@ -458,6 +506,15 @@
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
 <script>
+  // ── EMAIL LINKS (set via JS to avoid Cloudflare email obfuscation) ──
+  (function() {
+    var e = ['hellotosanjana', 'gmail.com'].join('@');
+    var links = document.querySelectorAll('.email-link');
+    for (var i = 0; i < links.length; i++) {
+      links[i].href = 'mai' + 'lto:' + e;
+    }
+  })();
+
   // ── THEME TOGGLE ──
   var themeToggle = document.getElementById('themeToggle');
 
@@ -692,6 +749,13 @@
     function startChase() {
       if (playing) return;
       playing = true;
+
+      // Dismiss speech bubble on first click
+      var bubble = document.getElementById('speechBubble');
+      if (bubble && !bubble.classList.contains('hidden')) {
+        bubble.classList.add('hidden');
+        setTimeout(function() { bubble.remove(); }, 300);
+      }
 
       // Phase 1: Yarn rolls out
       yarnX = 10;
